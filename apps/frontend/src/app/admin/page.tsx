@@ -1,17 +1,18 @@
-"use client";
+import SlotsList from "@/components/slots/slots-list";
+import { SlotService } from "@/lib/slot-service";
+import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
+import PageWrapper from "@/components/layout/page-wrapper";
 
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: GetSlotsQueryDTO;
+}) {
+  const slots = await SlotService.instance.list(searchParams);
 
-const Admin = () => {
   return (
-    <div className="flex flex-1 h-full p-4">
-      {/* HERE COMES THE ADMIN PANEL */}
-      <Button onClick={() => signOut({ callbackUrl: "/login" })}>
-        Abmelden
-      </Button>
-    </div>
+    <PageWrapper>
+      <SlotsList slots={slots} />
+    </PageWrapper>
   );
-};
-
-export default Admin;
+}
