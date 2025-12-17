@@ -1,0 +1,7 @@
+
+
+> database@1.0.0 lint /Users/beratuzun/Desktop/Personal/projects/bedis-hairsalon/packages/database
+> eslint .
+
+sh: eslint: command not found
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed.[39m
