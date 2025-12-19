@@ -1,7 +1,6 @@
 import { ApiHandler } from "@/lib/auth/types";
 import { withAuth } from "@/lib/auth/withAuth";
-import { GroupType } from "@/lib/entities/user-group";
-import { getLogger } from "@/lib/logger";
+import { getLogger } from "@/lib/helper/logger";
 import { prisma } from "database";
 import { NextResponse } from "next/server";
 
@@ -20,7 +19,4 @@ const getHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
   }
 };
 
-export const GET = withAuth({
-  handler: getHandler,
-  allowedGroups: [GroupType.Admin, GroupType.SuperAdmin],
-});
+export const GET = withAuth(getHandler);

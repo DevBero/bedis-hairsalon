@@ -6,11 +6,9 @@ import BookedSlots from "../admin/booked-slots";
 
 const SlotsList = ({ slots }: { slots: Slot[] }) => {
   return (
-    <div>
-      <AdminTabs>
-        <BookedSlots slots={slots} />
-      </AdminTabs>
-    </div>
+    <AdminTabs>
+      <BookedSlots slots={slots} />
+    </AdminTabs>
   );
 };
 

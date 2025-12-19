@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { Metadata } from "next";
 import { Providers } from "../providers";
-import PageHeader from "@/components/layout/page-header";
+import PageHeader from "@/components/admin/page-header";
+import BackButton from "@/components/admin/back-button";
 
 type Props = { children: ReactNode };
 
@@ -21,6 +22,7 @@ export default function AdminRootLayout({ children }: Props) {
           <main className="flex-1">
             <PageHeader />
             {children}
+            <BackButton />
           </main>
         </Providers>
       </body>

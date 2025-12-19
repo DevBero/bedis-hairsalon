@@ -1,3 +1,5 @@
-import { Slot } from "database";
-
-export type CreateSlotDTO = Omit<Slot, "created_at" | "id">;
+export type CreateSlotsDTO = {
+  date: string;
+  start_time: string;
+  end_time: string;
+};
