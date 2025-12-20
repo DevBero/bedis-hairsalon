@@ -1,8 +1,8 @@
 import { TabsContent } from "../ui/tabs";
-import type { Slot } from "@prisma/client";
 import { Card, CardContent } from "../ui/card";
 import { BadgeCheck } from "lucide-react";
 import { formatTime } from "@/lib/helper/format-time";
+import type { Slot } from "database";
 
 const BookedSlots = ({ slots }: { slots: Slot[] }) => {
   return (

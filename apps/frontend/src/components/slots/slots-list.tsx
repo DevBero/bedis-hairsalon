@@ -1,6 +1,6 @@
 "use client";
 
-import type { Slot } from "@prisma/client";
+import type { Slot } from "database";
 import AdminTabs from "../admin/tabs";
 import BookedSlots from "../admin/booked-slots";
 
