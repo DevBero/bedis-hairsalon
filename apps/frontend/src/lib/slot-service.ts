@@ -25,4 +25,10 @@ export class SlotService {
       },
     });
   }
+
+  async delete(id: string) {
+    return prisma.slot.delete({
+      where: { id },
+    });
+  }
 }

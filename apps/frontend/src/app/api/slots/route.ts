@@ -8,7 +8,7 @@ import { prisma } from "database";
 import { NextResponse } from "next/server";
 const INTERVAL_MINUTES = 30;
 
-const logger = getLogger("/admin/api/slot");
+const logger = getLogger("/api/slot");
 
 const getHandler: ApiHandler<object> = async (req) => {
   const { searchParams } = new URL(req.url);

@@ -56,7 +56,7 @@ const CreateSlotsPage = () => {
     };
 
     try {
-      const res = await fetch("/admin/api/slots", {
+      const res = await fetch("/api/slots", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const CreateSlotsPage = () => {
     <>
       <Calendar locale={de} mode="single" selected={date} onSelect={setDate} />
       <PageWrapper>
-        <form>
+        <form className="mt-4">
           <FieldGroup className="flex flex-row">
             <Controller
               name="start_time"
@@ -102,7 +102,6 @@ const CreateSlotsPage = () => {
                     id="start-time-picker"
                     aria-invalid={fieldState.invalid}
                     required
-                    className="flex w-full h-20 text-xl"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -128,7 +127,6 @@ const CreateSlotsPage = () => {
                     id="end-time-picker"
                     aria-invalid={fieldState.invalid}
                     required
-                    className="flex w-full h-20 text-xl"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

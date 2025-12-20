@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
@@ -6,8 +7,12 @@ import { Button } from "../ui/button";
 import { nameFormSchema } from "@/types/name-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import useStore from "@/lib/store";
+import { useRouter } from "next/navigation";
 
 const NameForm = () => {
+  const { setName } = useStore();
+  const router = useRouter();
   const form = useForm<z.infer<typeof nameFormSchema>>({
     resolver: zodResolver(nameFormSchema),
     defaultValues: {
@@ -15,13 +20,18 @@ const NameForm = () => {
     },
   });
 
+  const handleNameSubmit = (values: z.infer<typeof nameFormSchema>) => {
+    setName(values.name);
+    router.push("/select-slot");
+  };
+
   return (
     <>
       <h1 className="text-5xl font-bold mb-8">Bedis Hairsalon</h1>
 
       <form
         onSubmit={form.handleSubmit((values) => {
-          console.log(values);
+          handleNameSubmit(values);
         })}
         className="flex flex-col gap-4 w-full lg:max-w-[50%]"
       >
@@ -49,7 +59,7 @@ const NameForm = () => {
             )}
           />
         </FieldGroup>
-        <Button disabled={!form.formState.isValid} type="submit">
+        <Button size="lg" disabled={!form.formState.isValid} type="submit">
           Weiter
         </Button>
       </form>
