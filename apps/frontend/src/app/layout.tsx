@@ -12,9 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body>
-        <main className="flex-1 flex">{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

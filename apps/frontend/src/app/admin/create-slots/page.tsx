@@ -1,160 +1,124 @@
 "use client";
 
-import ActionButton from "@/components/admin/action-button";
+import FormFooter from "@/components/forms/footer";
+import SubmitForm from "@/components/forms/submit-form";
+import TimesForm from "@/components/forms/times-form";
 import PageWrapper from "@/components/layout/page-wrapper";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { getCurrentTime } from "@/lib/helper/get-current-time";
-import { createSlotsFromSchema } from "@/types/create-slots-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle } from "lucide-react";
-import React from "react";
+  decrementTabNumer,
+  incrementTabNumer,
+} from "@/lib/helper/switch-tab-number";
+import useStore, { CreateSlotsFormSteps } from "@/lib/store";
+import { TimesFormValues } from "@/types/times-for";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { de } from "react-day-picker/locale";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import z from "zod";
 
 const CreateSlotsPage = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const currentTime = getCurrentTime();
-
-  const form = useForm<z.infer<typeof createSlotsFromSchema>>({
-    resolver: zodResolver(createSlotsFromSchema),
-    mode: "onChange",
-    defaultValues: {
-      start_time: currentTime,
-      end_time: "",
-    },
-  });
-
+  const { date, setDate } = useStore();
   const {
-    control,
-    formState: { isValid, isSubmitting },
-  } = form;
+    currentTab,
+    setCurrentTab,
+    setStartTime,
+    startTime,
+    endTime,
+    setEndTime,
+  } = useStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const startTime = useWatch({ control: form.control, name: "start_time" });
-  const endTimeValue = useWatch({ control: form.control, name: "end_time" });
-
-  const canSubmit = !!date && !!startTime && !!endTimeValue && isValid;
-
-  const onSubmit = async (values: z.infer<typeof createSlotsFromSchema>) => {
+  const handleSubmitDate = (date: Date | undefined) => {
     if (!date) return;
 
-    const dateStr = date.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    setDate(date);
+    setCurrentTab(CreateSlotsFormSteps.SelectTimes);
 
-    const payload = {
-      date: dateStr,
-      start_time: values.start_time,
-      end_time: values.end_time,
-      intervalMinutes: 30,
-    };
+    incrementTabNumer({
+      searchParams,
+      currentTab,
+      pathname,
+      router,
+    });
+  };
 
-    try {
-      const res = await fetch("/api/slots", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+  const handleSubmitTimes = ({ start_time, end_time }: TimesFormValues) => {
+    if (!start_time || !end_time) {
+      return;
+    }
+    setStartTime(start_time);
+    setEndTime(end_time);
 
-      if (!res.ok) {
-        // TODO: nicer error handling
-        console.error("Failed to create slots");
-        return;
-      }
+    setCurrentTab(CreateSlotsFormSteps.Submit);
 
-      const data = await res.json();
-      console.log("Slots created:", data);
-      // TODO: Toast anzeigen, redirect, Form reset etc.
-    } catch (err) {
-      console.error("Error calling API:", err);
+    incrementTabNumer({
+      searchParams,
+      currentTab,
+      pathname,
+      router,
+    });
+  };
+
+  const handleBack = () => {
+    if (currentTab === 0) {
+      router.push("/admin");
+      return;
+    }
+    setCurrentTab(currentTab - 1);
+    decrementTabNumer({
+      searchParams,
+      currentTab,
+      pathname,
+      router,
+    });
+  };
+
+  const renderCurrentStep = () => {
+    switch (currentTab) {
+      case CreateSlotsFormSteps.SelectDate:
+        return (
+          <>
+            <Calendar locale={de} mode="single" selected={date} />
+            <FormFooter
+              onBack={() => handleBack()}
+              onClick={() => handleSubmitDate(date)}
+            />
+          </>
+        );
+      case CreateSlotsFormSteps.SelectTimes:
+        return (
+          <>
+            <TimesForm />
+            <FormFooter
+              onBack={() => handleBack()}
+              onClick={() =>
+                handleSubmitTimes({
+                  start_time: startTime!,
+                  end_time: endTime!,
+                })
+              }
+            />
+          </>
+        );
+      case CreateSlotsFormSteps.Submit:
+        return (
+          <>
+            <PageWrapper className="h-full flex flex-col">
+              <SubmitForm />
+              <FormFooter
+                submit
+                onBack={() => handleBack()}
+                onClick={() => handleSubmitDate(date)}
+              />
+            </PageWrapper>
+          </>
+        );
+      default:
+        return null;
     }
   };
 
-  return (
-    <>
-      <Calendar locale={de} mode="single" selected={date} onSelect={setDate} />
-      <PageWrapper>
-        <form className="mt-4">
-          <FieldGroup className="flex flex-row">
-            <Controller
-              name="start_time"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel
-                    aria-required
-                    htmlFor="start_time"
-                    className="text-md"
-                  >
-                    Schichtbeginn
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    type="time"
-                    id="start-time-picker"
-                    aria-invalid={fieldState.invalid}
-                    required
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="end_time"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel
-                    aria-required
-                    htmlFor="end_time"
-                    className="text-md"
-                  >
-                    Schichtende
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    type="time"
-                    id="end-time-picker"
-                    aria-invalid={fieldState.invalid}
-                    required
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-
-          <ActionButton
-            className={`
-               transition-all duration-300
-              ${canSubmit ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}
-            `}
-          >
-            <Button
-              type="submit"
-              size="lg"
-              disabled={!canSubmit || isSubmitting}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              {isSubmitting ? <LoaderCircle /> : "Termine erstellen"}
-            </Button>
-          </ActionButton>
-        </form>
-      </PageWrapper>
-    </>
-  );
+  return <div className="flex-1 flex flex-col">{renderCurrentStep()}</div>;
 };
 
 export default CreateSlotsPage;

@@ -14,12 +14,11 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 
 type AdminPageProps = {
-  searchParams: Promise<GetSlotsQueryDTO>;
+  searchParams: GetSlotsQueryDTO;
 };
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const params = await searchParams;
-  const slots = await SlotService.instance.list(params);
+  const slots = await SlotService.instance.list(searchParams);
 
   return (
     <PageWrapper>
@@ -33,7 +32,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end">
             <DropdownMenuItem asChild>
-              <Link href="/admin/create-slots">Termin anlegen</Link>
+              <Link href="/admin/create-slots?t=0">Termin anlegen</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
