@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import SlotsList from "@/components/slots/slots-list";
 import { SlotService } from "@/lib/slot-service";
 import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
