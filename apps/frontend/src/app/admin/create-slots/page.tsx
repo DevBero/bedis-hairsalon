@@ -89,7 +89,7 @@ const CreateSlotsPage = () => {
         );
       case CreateSlotsFormSteps.SelectTimes:
         return (
-          <>
+          <PageWrapper className="flex-1 flex flex-col">
             <TimesForm />
             <FormFooter
               onBack={() => handleBack()}
@@ -100,7 +100,7 @@ const CreateSlotsPage = () => {
                 })
               }
             />
-          </>
+          </PageWrapper>
         );
       case CreateSlotsFormSteps.Submit:
         return (

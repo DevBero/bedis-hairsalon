@@ -22,8 +22,8 @@ const TimesForm = () => {
   });
 
   return (
-    <form className="mt-4 h-full justify-end flex items-end p-3">
-      <FieldGroup className="flex flex-row mb-8">
+    <form className="mt-4 h-full justify-end flex items-end p-3 bg-red-200 mb-8">
+      <FieldGroup className="flex flex-row bg-green-200">
         <Controller
           name="start_time"
           control={control}
