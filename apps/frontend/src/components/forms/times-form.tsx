@@ -23,56 +23,18 @@ const TimesForm = () => {
 
   return (
     <form className="mt-4 h-full justify-end flex items-end p-3 mb-8">
-      <FieldGroup className="flex flex-row ">
-        <Controller
-          name="start_time"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              {/* <FieldLabel
-                aria-required
-                htmlFor="start_time"
-                className="text-md font-light uppercase"
-              >
-                Von
-              </FieldLabel> */}
-              <Input
-                {...field}
-                type="time"
-                id="start-time-picker"
-                aria-invalid={fieldState.invalid}
-                required
-                className="h-20 text-xl [&>svg]:hidden"
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-        <Controller
-          name="end_time"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              {/* <FieldLabel
-                aria-required
-                htmlFor="end_time"
-                className="text-md uppercase font-light"
-              >
-                Bis
-              </FieldLabel> */}
-              <Input
-                {...field}
-                type="time"
-                id="end-time-picker"
-                aria-invalid={fieldState.invalid}
-                required
-                className="h-20 text-xl"
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-      </FieldGroup>
+      <Input
+        type="time"
+        id="start-time-picker"
+        required
+        className="h-20 text-xl [&>svg]:hidden"
+      />
+      <Input
+        type="time"
+        id="end-time-picker"
+        required
+        className="h-20 text-xl"
+      />
     </form>
   );
 };
