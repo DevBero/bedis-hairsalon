@@ -33,7 +33,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "w-full group/calendar p-3 bg-gray-100 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        "flex-1 w-full group/calendar p-3 bg-gray-100 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
@@ -145,14 +145,14 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
+              <ChevronLeftIcon className={cn("size-6", className)} {...props} />
             );
           }
 
           if (orientation === "right") {
             return (
               <ChevronRightIcon
-                className={cn("size-4", className)}
+                className={cn("size-6", className)}
                 {...props}
               />
             );

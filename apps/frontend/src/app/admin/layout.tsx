@@ -18,7 +18,7 @@ export default function AdminRootLayout({ children }: Props) {
 
       <body>
         <Providers>
-          <main className="flex-1 flex flex-col">
+          <main className="flex-1 flex flex-col max-h-[100dvh]">
             <Suspense fallback={<div>...Loading</div>}>
               <PageHeader />
               {children}
