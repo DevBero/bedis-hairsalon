@@ -4,6 +4,7 @@ import FormFooter from "@/components/forms/footer";
 import SubmitForm from "@/components/forms/submit-form";
 import TimesForm from "@/components/forms/times-form";
 import { Calendar } from "@/components/ui/calendar";
+import { CreateSlotsDTO } from "@/lib/dtos/create-slot.dto";
 import {
   decrementTabNumer,
   incrementTabNumer,
@@ -14,14 +15,15 @@ import { useState } from "react";
 import { de } from "react-day-picker/locale";
 
 const CreateSlotsPage = () => {
-  const { date, setDate } = useStore();
   const {
+    date,
     startTime,
     endTime,
     currentTab,
     setCurrentTab,
     setStartTime,
     setEndTime,
+    setDate,
   } = useStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -29,12 +31,16 @@ const CreateSlotsPage = () => {
   const [start, setStart] = useState<string | undefined>(
     startTime ?? undefined
   );
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
   const [end, setEnd] = useState<string | undefined>(endTime ?? undefined);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSubmitDate = (date: Date | undefined) => {
-    if (!date) return;
+  const handleSubmitDate = () => {
+    if (!selectedDate) return;
 
-    setDate(date);
+    setDate(selectedDate);
     setCurrentTab(CreateSlotsFormSteps.SelectTimes);
 
     incrementTabNumer({
@@ -75,17 +81,52 @@ const CreateSlotsPage = () => {
     });
   };
 
+  const handleCreateSlots = async () => {
+    if (!date || !startTime || !endTime) return;
+
+    try {
+      setIsSubmitting(true);
+      const payload: CreateSlotsDTO = {
+        date: date.toISOString().split("T")[0],
+        start_time: startTime,
+        end_time: endTime,
+      };
+
+      const res = await fetch("/api/slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        console.error("Failed to create slots");
+        return;
+      }
+
+      router.push("/admin");
+    } catch (err) {
+      console.error("Error creating slots", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const renderCurrentStep = () => {
     switch (currentTab) {
       case CreateSlotsFormSteps.SelectDate:
         return (
           <>
             <div className="bg-gray-100">
-              <Calendar locale={de} mode="single" selected={date} />
+              <Calendar
+                locale={de}
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => setSelectedDate(date)}
+              />
             </div>
             <FormFooter
               onBack={() => handleBack()}
-              onClick={() => handleSubmitDate(date)}
+              onClick={() => handleSubmitDate()}
             />
           </>
         );
@@ -110,9 +151,10 @@ const CreateSlotsPage = () => {
           <>
             <SubmitForm />
             <FormFooter
+              loading={isSubmitting}
               submit
               onBack={() => handleBack()}
-              onClick={() => handleSubmitDate(date)}
+              onClick={() => handleCreateSlots()}
             />
           </>
         );

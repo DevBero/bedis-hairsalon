@@ -50,9 +50,9 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted }) => {
           <BadgeCheck color="green" />
         </div>
         <div className="p-1 flex-1">
-          <h3>Max Mustermann</h3>
+          <h3>Freier Termin</h3>
           <span className="text-gray-500">
-            {slot.start_time.getDate()}.{slot.start_time.getMonth() + 1}. um{" "}
+            {slot.date.toLocaleDateString("de")} um{" "}
             {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
           </span>
         </div>

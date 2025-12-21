@@ -1,15 +1,17 @@
 import { Button } from "../ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LoaderIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FormFooter = ({
   onClick,
   disabled,
+  loading,
   onBack,
   submit,
 }: {
   onClick: () => void;
   disabled?: boolean;
+  loading?: boolean;
   onBack?: () => void;
   submit?: boolean;
 }) => {
@@ -32,7 +34,7 @@ const FormFooter = ({
         onClick={onClick}
         disabled={disabled}
       >
-        {submit ? "Termine erstellen" : "Weiter"}
+        {submit ? loading ? <LoaderIcon /> : "Termine erstellen" : "Weiter"}
       </Button>
     </div>
   );

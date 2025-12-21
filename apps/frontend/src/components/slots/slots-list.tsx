@@ -2,12 +2,12 @@
 
 import type { Slot } from "database";
 import AdminTabs from "../admin/tabs";
-import BookedSlots from "../admin/booked-slots";
+import FreeSlots from "../admin/free-slots";
 
 const SlotsList = ({ slots }: { slots: Slot[] }) => {
   return (
     <AdminTabs>
-      <BookedSlots slots={slots} />
+      <FreeSlots slots={slots} />
     </AdminTabs>
   );
 };

@@ -6,7 +6,7 @@ const ActionButton = ({
   className?: string;
 }) => {
   return (
-    <div className={`fixed bottom-8 right-8 ${className}`}>{children}</div>
+    <div className={`fixed bottom-8 right-3 ${className}`}>{children}</div>
   );
 };
 
