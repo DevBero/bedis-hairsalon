@@ -22,20 +22,20 @@ const TimesForm = () => {
   });
 
   return (
-    <form className="mt-4 h-full justify-end flex items-end p-3 bg-red-200 mb-8">
-      <FieldGroup className="flex flex-row bg-green-200">
+    <form className="mt-4 h-full justify-end flex items-end p-3 mb-8">
+      <FieldGroup className="flex flex-row ">
         <Controller
           name="start_time"
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel
+              {/* <FieldLabel
                 aria-required
                 htmlFor="start_time"
-                className="text-md"
+                className="text-md font-light uppercase"
               >
                 Von
-              </FieldLabel>
+              </FieldLabel> */}
               <Input
                 {...field}
                 type="time"
@@ -53,9 +53,13 @@ const TimesForm = () => {
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel aria-required htmlFor="end_time" className="text-md">
+              {/* <FieldLabel
+                aria-required
+                htmlFor="end_time"
+                className="text-md uppercase font-light"
+              >
                 Bis
-              </FieldLabel>
+              </FieldLabel> */}
               <Input
                 {...field}
                 type="time"
