@@ -78,7 +78,9 @@ const CreateSlotsPage = () => {
       case CreateSlotsFormSteps.SelectDate:
         return (
           <>
-            <Calendar locale={de} mode="single" selected={date} />
+            <div className="bg-gray-100">
+              <Calendar locale={de} mode="single" selected={date} />
+            </div>
             <FormFooter
               onBack={() => handleBack()}
               onClick={() => handleSubmitDate(date)}

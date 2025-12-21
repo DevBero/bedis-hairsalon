@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "../ui/button";
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
