@@ -10,7 +10,15 @@ const FreeSlots = ({ slots }: { slots: Slot[] }) => {
           Keine gebuchten Slots vorhanden.
         </p>
       ) : (
-        slots.map((slot) => <SlotCard key={slot.id} slot={slot} />)
+        slots.map((slot) => (
+          <SlotCard
+            key={slot.id}
+            slot={{
+              ...slot,
+              title: "Freier Termin",
+            }}
+          />
+        ))
       )}
     </TabsContent>
   );

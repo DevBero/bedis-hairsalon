@@ -13,9 +13,12 @@ const logger = getLogger("/api/slot");
 const getHandler: ApiHandler<object> = async (req) => {
   const { searchParams } = new URL(req.url);
 
+  const startDateParam = searchParams.get("start_date");
+  const endDateParam = searchParams.get("end_date");
+
   const query: GetSlotsQueryDTO = {
-    start_date: searchParams.get("start_date") ?? undefined,
-    end_date: searchParams.get("end_date") ?? undefined,
+    start_date: startDateParam ? new Date(startDateParam) : undefined,
+    end_date: endDateParam ? new Date(endDateParam) : undefined,
   };
 
   const where =
