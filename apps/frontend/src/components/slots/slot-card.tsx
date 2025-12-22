@@ -3,18 +3,24 @@
 
 import React, { useState } from "react";
 import { Card, CardContent } from "../ui/card";
-import { BadgeCheck, Trash2 } from "lucide-react";
+import { BadgeCheck, Calendar, Trash2 } from "lucide-react";
 import { formatTime } from "@/lib/helper/format-time";
 import type { Slot } from "database";
 import { Button } from "../ui/button";
+import { SlotCardType } from "@/types/slot-card-type";
+import { cn } from "@/lib/utils";
 
 type SlotCardProps = {
-  slot: Slot;
+  slot: Slot & {
+    title: string;
+    type?: SlotCardType;
+  };
   onDeleted?: (id: string) => void;
 };
 
 const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted }) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const isBooking = slot.type === SlotCardType.Booking;
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
@@ -46,11 +52,16 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted }) => {
   return (
     <Card className="mb-4">
       <CardContent className="flex gap-2 items-center">
-        <div className="flex flex-col bg-green-200 aspect-square p-4 rounded-md">
-          <BadgeCheck color="green" />
+        <div
+          className={cn(
+            `flex flex-col aspect-square p-4 rounded-md`,
+            isBooking ? "bg-green-200" : "bg-gray-200"
+          )}
+        >
+          {isBooking ? <BadgeCheck color="green" /> : <Calendar />}
         </div>
         <div className="p-1 flex-1">
-          <h3>Freier Termin</h3>
+          <h3>{slot.title}</h3>
           <span className="text-gray-500">
             {slot.date.toLocaleDateString("de")} um{" "}
             {formatTime(slot.start_time)} - {formatTime(slot.end_time)}

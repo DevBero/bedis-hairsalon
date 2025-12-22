@@ -5,8 +5,8 @@ export class SlotService {
   static instance = new SlotService();
 
   async list(query: GetSlotsQueryDTO) {
-    const start = query.start_date ? new Date(query.start_date) : undefined;
-    const end = query.end_date ? new Date(query.end_date) : undefined;
+    const start = query.start_date;
+    const end = query.end_date;
 
     const where =
       start && end

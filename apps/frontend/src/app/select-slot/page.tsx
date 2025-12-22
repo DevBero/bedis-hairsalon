@@ -1,8 +1,7 @@
-// app/(whatever)/select-slot/page.tsx
+export const dynamic = "force-dynamic";
 
 import PageWrapper from "@/components/layout/page-wrapper";
 import UserPageHeader from "@/components/layout/user-header";
-import SlotCard from "@/components/slots/slot-card";
 import { SlotService } from "@/lib/slot-service";
 import {
   Accordion,
@@ -13,14 +12,21 @@ import {
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { groupSlotsByDate } from "@/lib/helper/group-slots-by-date";
+import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
+import SlotCard from "@/components/slots/slot-card";
 
-const SelectSlotPage = async () => {
+type SelectSlotPageProps = {
+  searchParams: Promise<GetSlotsQueryDTO>;
+};
+
+const SelectSlotPage = async ({ searchParams }: SelectSlotPageProps) => {
   const now = new Date();
+  const params = await searchParams;
   const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
   const slots = await SlotService.instance.list({
-    start_date: now.toISOString(),
-    end_date: in14Days.toISOString(),
+    start_date: params.start_date,
+    end_date: in14Days,
   });
 
   const grouped = groupSlotsByDate(slots);
@@ -43,7 +49,13 @@ const SelectSlotPage = async () => {
                 <AccordionContent>
                   <div className="flex flex-col">
                     {slots.map((slot) => (
-                      <SlotCard key={slot.id} slot={slot} />
+                      <SlotCard
+                        key={slot.id}
+                        slot={{
+                          ...slot,
+                          title: "Freier Termin",
+                        }}
+                      />
                     ))}
                   </div>
                 </AccordionContent>

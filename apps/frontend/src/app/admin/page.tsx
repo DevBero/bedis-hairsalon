@@ -16,11 +16,12 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 
 type AdminPageProps = {
-  searchParams: GetSlotsQueryDTO;
+  searchParams: Promise<GetSlotsQueryDTO>;
 };
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const slots = await SlotService.instance.list(searchParams);
+  const params = await searchParams;
+  const slots = await SlotService.instance.list(params);
 
   return (
     <PageWrapper>
