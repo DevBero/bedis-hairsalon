@@ -1,8 +1,15 @@
 import { TabsContent } from "../ui/tabs";
 import type { Slot } from "database";
 import SlotCard from "../slots/slot-card";
+import { Session } from "next-auth";
 
-const FreeSlots = ({ slots }: { slots: Slot[] }) => {
+const FreeSlots = ({
+  slots,
+  session,
+}: {
+  slots: Slot[];
+  session: Session | Promise<Session | null>;
+}) => {
   return (
     <TabsContent value="termine">
       {slots.length === 0 ? (
@@ -13,6 +20,7 @@ const FreeSlots = ({ slots }: { slots: Slot[] }) => {
         slots.map((slot) => (
           <SlotCard
             key={slot.id}
+            session={session ?? undefined}
             slot={{
               ...slot,
               title: "Freier Termin",

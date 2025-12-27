@@ -5,7 +5,7 @@ const groupSlotsByDate = (slots: Slot[]) => {
   const map = new Map<string, Slot[]>();
 
   for (const slot of slots) {
-    const date = new Date(slot.start_time);
+    const date = new Date(slot.date);
     const key = format(date, "yyyy-MM-dd");
     const arr = map.get(key) ?? [];
     arr.push(slot);
@@ -16,7 +16,7 @@ const groupSlotsByDate = (slots: Slot[]) => {
     .sort(([a], [b]) => (a < b ? -1 : 1))
     .map(([key, slots]) => ({
       key,
-      date: new Date(slots[0].start_time),
+      date: new Date(slots[0].date),
       slots,
     }));
 };

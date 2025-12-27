@@ -5,6 +5,7 @@ import SubmitForm from "@/components/forms/submit-form";
 import TimesForm from "@/components/forms/times-form";
 import { Calendar } from "@/components/ui/calendar";
 import { CreateSlotsDTO } from "@/lib/dtos/create-slot.dto";
+import getSlotCount from "@/lib/helper/get-slots-count";
 import {
   decrementTabNumer,
   incrementTabNumer,
@@ -13,6 +14,7 @@ import useStore, { CreateSlotsFormSteps } from "@/lib/store";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { de } from "react-day-picker/locale";
+import { toast } from "sonner";
 
 const CreateSlotsPage = () => {
   const {
@@ -36,6 +38,7 @@ const CreateSlotsPage = () => {
   );
   const [end, setEnd] = useState<string | undefined>(endTime ?? undefined);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const slotCount = getSlotCount(startTime ?? undefined, endTime ?? undefined);
 
   const handleSubmitDate = () => {
     if (!selectedDate) return;
@@ -104,6 +107,12 @@ const CreateSlotsPage = () => {
       }
 
       router.push("/admin");
+
+      toast.success(`${slotCount} Termine erfolgreich angelegt`, {
+        description: "Du kannst freie Termine in deinem Dashboard sehen",
+        closeButton: true,
+        richColors: true,
+      });
     } catch (err) {
       console.error("Error creating slots", err);
     } finally {

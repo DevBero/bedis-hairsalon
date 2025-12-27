@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
 
 type AdminPageProps = {
   searchParams: Promise<GetSlotsQueryDTO>;
@@ -22,10 +23,11 @@ type AdminPageProps = {
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
   const slots = await SlotService.instance.list(params);
+  const session = getServerSession();
 
   return (
     <PageWrapper>
-      <SlotsList slots={slots} />
+      <SlotsList session={session ?? undefined} slots={slots} />
       <ActionButton>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -2,6 +2,7 @@ import { ReactNode, Suspense } from "react";
 import { Metadata } from "next";
 import { Providers } from "../providers";
 import PageHeader from "@/components/admin/page-header";
+import { Toaster } from "sonner";
 
 type Props = { children: ReactNode };
 
@@ -21,6 +22,7 @@ export default function AdminRootLayout({ children }: Props) {
           <main className="flex-1 flex flex-col max-h-[100dvh]">
             <Suspense fallback={<div>...Loading</div>}>
               <PageHeader />
+              <Toaster />
               {children}
             </Suspense>
           </main>

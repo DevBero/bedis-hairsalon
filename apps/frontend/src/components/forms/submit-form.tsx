@@ -7,6 +7,7 @@ import getSlotCount from "@/lib/helper/get-slots-count";
 const SubmitForm = () => {
   const { date, startTime, endTime } = useStore();
   const slotCount = getSlotCount(startTime ?? undefined, endTime ?? undefined);
+
   return (
     <PageWrapper className="flex-1">
       <p className="text-sm text-gray-500">Noch einmal kurz alles abchecken</p>
