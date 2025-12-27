@@ -17,7 +17,7 @@ type SlotCardProps = {
     type?: SlotCardType;
   };
   onDeleted?: (id: string) => void;
-  session: Session | Promise<Session | null> | undefined;
+  session: Session | undefined;
 };
 
 const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
@@ -44,7 +44,8 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
         return;
       }
 
-      onDeleted?.(slot.id);
+      onDeleted?.(slot.id); // 👈 triggert router.refresh() im Parent
+
       toast.success(`Termin erfolgreich gelöscht`, {
         description: "Du hast dein Termin erfolgreich gelöscht.",
         closeButton: true,

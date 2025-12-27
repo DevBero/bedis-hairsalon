@@ -5,17 +5,16 @@ export type IncrementTabNumberI = {
   searchParams: ReadonlyURLSearchParams;
   router: AppRouterInstance;
   pathname: string;
-  currentTab: number;
 };
 
 export const incrementTabNumer = ({
   searchParams,
   router,
   pathname,
-  currentTab,
 }: IncrementTabNumberI) => {
   const params = new URLSearchParams(searchParams.toString());
-  params.set("t", `${currentTab + 1}`);
+  const current = Number(params.get("t") ?? "0");
+  params.set("t", String(current + 1));
 
   router.push(`${pathname}?${params.toString()}`);
 };
@@ -24,10 +23,11 @@ export const decrementTabNumer = ({
   searchParams,
   router,
   pathname,
-  currentTab,
 }: IncrementTabNumberI) => {
   const params = new URLSearchParams(searchParams.toString());
-  params.set("t", `${currentTab - 1}`);
+  const current = Number(params.get("t") ?? "0");
+  const next = Math.max(0, current - 1); // nicht unter 0 gehen
+  params.set("t", String(next));
 
   router.push(`${pathname}?${params.toString()}`);
 };

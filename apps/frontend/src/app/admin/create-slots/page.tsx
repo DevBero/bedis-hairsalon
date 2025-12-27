@@ -10,7 +10,7 @@ import {
   decrementTabNumer,
   incrementTabNumer,
 } from "@/lib/helper/switch-tab-number";
-import useStore, { CreateSlotsFormSteps } from "@/lib/store";
+import useStore from "@/lib/store";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { de } from "react-day-picker/locale";
@@ -29,7 +29,6 @@ const CreateSlotsPage = () => {
   } = useStore();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [start, setStart] = useState<string | undefined>(
     startTime ?? undefined
   );
@@ -39,46 +38,48 @@ const CreateSlotsPage = () => {
   const [end, setEnd] = useState<string | undefined>(endTime ?? undefined);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const slotCount = getSlotCount(startTime ?? undefined, endTime ?? undefined);
+  const searchParams = useSearchParams();
+  const t = searchParams.get("t") ?? "0";
+  const step = Number(t);
 
   const handleSubmitDate = () => {
     if (!selectedDate) return;
 
     setDate(selectedDate);
-    setCurrentTab(CreateSlotsFormSteps.SelectTimes);
 
     incrementTabNumer({
       searchParams,
-      currentTab,
       pathname,
       router,
     });
   };
 
   const handleSubmitTimes = () => {
-    if (!start || !end) return;
+    console.log("SUBMIT TIMES WAS CLICKED");
+    console.log("start", start, end);
+    if (!start || !end) {
+      console.log("Start oder end fehlt");
+      return;
+    }
 
     setStartTime(start);
     setEndTime(end);
 
-    setCurrentTab(CreateSlotsFormSteps.Submit);
-
     incrementTabNumer({
       searchParams,
-      currentTab,
       pathname,
       router,
     });
   };
 
   const handleBack = () => {
-    if (currentTab === 0) {
+    if (step === 0) {
       router.push("/admin");
       return;
     }
     setCurrentTab(currentTab - 1);
     decrementTabNumer({
       searchParams,
-      currentTab,
       pathname,
       router,
     });
@@ -121,55 +122,57 @@ const CreateSlotsPage = () => {
   };
 
   const renderCurrentStep = () => {
-    switch (currentTab) {
-      case CreateSlotsFormSteps.SelectDate:
-        return (
-          <>
-            <div className="bg-gray-100">
-              <Calendar
-                locale={de}
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => setSelectedDate(date)}
-              />
-            </div>
-            <FormFooter
-              onBack={() => handleBack()}
-              onClick={() => handleSubmitDate()}
+    if (pathname !== "/admin/create-slots") return null;
+
+    if (step === 0) {
+      return (
+        <>
+          <div className="bg-gray-100">
+            <Calendar
+              locale={de}
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => setSelectedDate(date)}
             />
-          </>
-        );
-      case CreateSlotsFormSteps.SelectTimes:
-        return (
-          <>
-            <TimesForm
-              start_time={start!}
-              end_time={end!}
-              setStart={setStart}
-              setEnd={setEnd}
-            />
-            <FormFooter
-              disabled={!start || !end}
-              onBack={() => handleBack()}
-              onClick={() => handleSubmitTimes()}
-            />
-          </>
-        );
-      case CreateSlotsFormSteps.Submit:
-        return (
-          <>
-            <SubmitForm />
-            <FormFooter
-              loading={isSubmitting}
-              submit
-              onBack={() => handleBack()}
-              onClick={() => handleCreateSlots()}
-            />
-          </>
-        );
-      default:
-        return null;
+          </div>
+          <FormFooter onBack={handleBack} onClick={handleSubmitDate} />
+        </>
+      );
     }
+
+    if (step === 1) {
+      return (
+        <>
+          <TimesForm
+            start_time={start!}
+            end_time={end!}
+            setStart={setStart}
+            setEnd={setEnd}
+          />
+          <FormFooter
+            disabled={!start || !end}
+            onBack={handleBack}
+            onClick={handleSubmitTimes}
+          />
+        </>
+      );
+    }
+
+    if (step === 2) {
+      return (
+        <>
+          <SubmitForm />
+          <FormFooter
+            loading={isSubmitting}
+            submit
+            onBack={handleBack}
+            onClick={handleCreateSlots}
+          />
+        </>
+      );
+    }
+
+    return null;
   };
 
   return <div className="flex-1 flex flex-col">{renderCurrentStep()}</div>;

@@ -23,7 +23,7 @@ type AdminPageProps = {
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
   const slots = await SlotService.instance.list(params);
-  const session = getServerSession();
+  const session = await getServerSession();
 
   return (
     <PageWrapper>

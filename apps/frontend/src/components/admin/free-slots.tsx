@@ -6,9 +6,11 @@ import { Session } from "next-auth";
 const FreeSlots = ({
   slots,
   session,
+  onDeleted,
 }: {
   slots: Slot[];
-  session: Session | Promise<Session | null>;
+  session: Session | undefined;
+  onDeleted?: (id: string) => void;
 }) => {
   return (
     <TabsContent value="termine">
@@ -20,7 +22,8 @@ const FreeSlots = ({
         slots.map((slot) => (
           <SlotCard
             key={slot.id}
-            session={session ?? undefined}
+            session={session}
+            onDeleted={onDeleted}
             slot={{
               ...slot,
               title: "Freier Termin",
