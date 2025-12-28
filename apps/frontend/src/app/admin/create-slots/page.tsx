@@ -127,14 +127,12 @@ const CreateSlotsPage = () => {
     if (step === 0) {
       return (
         <>
-          <div className="bg-gray-100">
-            <Calendar
-              locale={de}
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => setSelectedDate(date)}
-            />
-          </div>
+          <Calendar
+            locale={de}
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => setSelectedDate(date)}
+          />
           <FormFooter onBack={handleBack} onClick={handleSubmitDate} />
         </>
       );
