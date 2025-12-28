@@ -33,9 +33,12 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
   grouped,
   session,
 }) => {
+  const firstSlotId = grouped[0]?.slots[0]?.id;
+
   const [selectedSlot, setSelectedSlot] = useState<string | undefined>(
-    undefined
+    firstSlotId
   );
+
   const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
   const router = useRouter();
   const { name } = useStore();
@@ -116,7 +119,12 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
     </p>
   ) : (
     <>
-      <Accordion type="single" collapsible className="w-full mb-20">
+      <Accordion
+        defaultValue={grouped[0]?.key}
+        type="single"
+        collapsible
+        className="w-full mb-20"
+      >
         {grouped.map(({ key, date, slots }) => (
           <AccordionItem key={key} value={key}>
             <AccordionTrigger className="p-4">
@@ -124,15 +132,22 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col">
-                {slots.map((slot) => (
-                  <SlotCard
-                    key={slot.id}
-                    session={session}
-                    slot={slot}
-                    title="Freier Termin"
-                    onSelect={() => handleSelectSlot(slot.id)}
-                    isSelected={selectedSlot === slot.id}
-                  />
+                {slots.map((slot, key) => (
+                  <div key={key}>
+                    {key === 0 && (
+                      <div className="ml-8 bg-primary p-1 px-3 max-w-fit text-bold text-white rounded-t-lg">
+                        Bitte nimm den wenn du kannst.
+                      </div>
+                    )}
+                    <SlotCard
+                      key={slot.id}
+                      session={session}
+                      slot={slot}
+                      title="Freier Termin"
+                      onSelect={() => handleSelectSlot(slot.id)}
+                      isSelected={selectedSlot === slot.id}
+                    />
+                  </div>
                 ))}
               </div>
             </AccordionContent>

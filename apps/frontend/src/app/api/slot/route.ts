@@ -2,8 +2,9 @@ import { ApiHandler } from "@/lib/auth/types";
 import { withAuth } from "@/lib/auth/withAuth";
 import { CreateSlotsDTO } from "@/lib/dtos/create-slot.dto";
 import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
-import combineDateAndTime from "@/lib/helper/cobine-date-and-time";
+import { combineDateAndTimeUtc } from "@/lib/helper/cobine-date-and-time";
 import { getLogger } from "@/lib/helper/logger";
+import { parseDateOnly } from "@/lib/helper/parse-date";
 import { prisma } from "database";
 import { NextResponse } from "next/server";
 const INTERVAL_MINUTES = 30;
@@ -41,8 +42,11 @@ const postHandler: ApiHandler<object> = async (req) => {
   try {
     const body = (await req.json()) as CreateSlotsDTO;
 
-    const startDateTime = combineDateAndTime(body.date, body.start_time);
-    const endDateTime = combineDateAndTime(body.date, body.end_time);
+    console.log("BODY", body);
+
+    const startDateTime = combineDateAndTimeUtc(body.date, body.start_time);
+    const endDateTime = combineDateAndTimeUtc(body.date, body.end_time);
+    const slotDate = parseDateOnly(body.date);
 
     if (endDateTime <= startDateTime) {
       return NextResponse.json(
@@ -51,7 +55,7 @@ const postHandler: ApiHandler<object> = async (req) => {
       );
     }
 
-    const slotsData: { start_time: Date; end_time: Date }[] = [];
+    const slotsData: { date: Date; start_time: Date; end_time: Date }[] = [];
 
     let currentStart = new Date(startDateTime);
 
@@ -64,6 +68,7 @@ const postHandler: ApiHandler<object> = async (req) => {
       }
 
       slotsData.push({
+        date: slotDate, // ⬅️ immer dasselbe (z.B. 2026-02-02)
         start_time: currentStart,
         end_time: currentEnd,
       });

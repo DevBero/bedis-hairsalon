@@ -31,7 +31,7 @@ const SlotCard: React.FC<SlotCardProps> = ({
   return (
     <Card
       className={cn(
-        "mb-4 cursor-pointer transition-colors my-2 mx-4",
+        "mb-4 cursor-pointer transition-colors mx-4",
         isSelected && "outline-solid outline-blue-600"
       )}
       onClick={onSelect}

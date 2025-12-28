@@ -55,8 +55,6 @@ const CreateSlotsPage = () => {
   };
 
   const handleSubmitTimes = () => {
-    console.log("SUBMIT TIMES WAS CLICKED");
-    console.log("start", start, end);
     if (!start || !end) {
       console.log("Start oder end fehlt");
       return;
@@ -85,13 +83,20 @@ const CreateSlotsPage = () => {
     });
   };
 
+  const formatDateLocal = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const handleCreateSlots = async () => {
     if (!date || !startTime || !endTime) return;
 
     try {
       setIsSubmitting(true);
       const payload: CreateSlotsDTO = {
-        date: date.toISOString().split("T")[0],
+        date: formatDateLocal(date),
         start_time: startTime,
         end_time: endTime,
       };

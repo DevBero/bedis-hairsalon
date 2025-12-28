@@ -14,8 +14,8 @@ const TimesForm = ({
   setEnd,
 }: TimesFormProps) => {
   return (
-    <form className="mt-4 h-full mb-4 p-3 flex items-end gap-6 w-full overflow-x-hidden">
-      <div className="flex flex-col flex-1 gap-2 min-w-0">
+    <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 w-full overflow-x-hidden">
+      <div className="flex flex-col gap-2 min-w-0 w-full">
         <span>VON</span>
         <Input
           type="time"
@@ -26,7 +26,7 @@ const TimesForm = ({
           className="h-20 text-xl [&>svg]:hidden w-full"
         />
       </div>
-      <div className="flex flex-col flex-1 gap-2 min-w-0">
+      <div className="flex flex-col gap-2 min-w-0 w-full">
         <span>BIS</span>
         <Input
           type="time"
