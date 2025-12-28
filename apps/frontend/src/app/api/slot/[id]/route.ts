@@ -22,28 +22,53 @@ const getHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
   }
 };
 
-const deleteHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
+const deleteHandler: ApiHandler<{ id: string }> = async (
+  req,
+  { id: slotId }
+) => {
   try {
+    const url = new URL(req.url);
+    const cancelBooking = url.searchParams.get("cancelBooking") === "true";
+
     const slot = await prisma.slot.findUnique({
       where: { id: slotId },
+      include: { booking: true },
     });
 
     if (!slot) {
-      logger.warn(`Slot not found: ${slotId}`);
       return NextResponse.json({ error: "Slot not found" }, { status: 404 });
     }
 
+    // ❌ Nur Booking stornieren
+    if (cancelBooking) {
+      if (!slot.booking) {
+        return NextResponse.json(
+          { error: "This slot has no booking to cancel" },
+          { status: 400 }
+        );
+      }
+
+      await prisma.booking.delete({
+        where: { id: slot.booking.id },
+      });
+
+      return NextResponse.json(
+        { message: "Booking canceled successfully", slotId },
+        { status: 200 }
+      );
+    }
+
+    // 🗑 Kompletter Slot löschen (z.B. im FreeSlots-Tab)
     await prisma.slot.delete({
       where: { id: slotId },
     });
 
     return NextResponse.json(
-      { message: "Slot deleted successfully", id: slotId },
+      { message: "Slot deleted successfully", slotId },
       { status: 200 }
     );
   } catch (error) {
-    logger.error({ slotId, error: String(error) }, "Failed to delete slot");
-
+    console.error("Failed to delete slot or booking", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SlotWithBooking } from "@/lib/slot-service";
 import useStore from "@/lib/store";
+import { Spinner } from "../ui/spinner";
 
 type GroupedSlots = {
   key: string;
@@ -145,7 +146,7 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
             className="w-full bg-blue-600"
             size="lg"
           >
-            {isLoadingSubmit ? "...loading" : "Termin buchen"}
+            {isLoadingSubmit ? <Spinner /> : "Termin buchen"}
           </Button>
         </div>
       )}

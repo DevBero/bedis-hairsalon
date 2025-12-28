@@ -48,7 +48,7 @@ const SubmitBookingPage = () => {
       `DTSTAMP:${dtStamp}`,
       `DTSTART:${dtStart}`,
       `DTEND:${dtEnd}`,
-      `SUMMARY:${title}`,
+      `SUMMARY: Termin bei Bedi`,
       "DESCRIPTION:Gebuchter Termin",
       "END:VEVENT",
       "END:VCALENDAR",
@@ -66,7 +66,7 @@ const SubmitBookingPage = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [date, start, end, title]);
+  }, [date, start, end]);
 
   return (
     <PageWrapper className="flex flex-col items-center justify-center text-center">

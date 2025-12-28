@@ -1,5 +1,6 @@
 import { Button } from "../ui/button";
-import { ChevronLeft, LoaderIcon } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FormFooter = ({
@@ -29,7 +30,7 @@ const FormFooter = ({
         </Button>
       )}
       <Button size="lg" onClick={onClick} disabled={disabled}>
-        {submit ? loading ? <LoaderIcon /> : "Termine erstellen" : "Weiter"}
+        {submit ? loading ? <Spinner /> : "Termine erstellen" : "Weiter"}
       </Button>
     </div>
   );

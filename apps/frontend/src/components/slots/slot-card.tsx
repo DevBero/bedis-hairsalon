@@ -1,72 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "../ui/card";
 import { BadgeCheck, Calendar, Trash2 } from "lucide-react";
 import { formatTime } from "@/lib/helper/format-time";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Session } from "next-auth";
-import { toast } from "sonner";
 import { SlotWithBooking } from "@/lib/slot-service";
 
 type SlotCardProps = {
   title: string;
   slot: SlotWithBooking;
-  onDeleted?: (id: string) => void;
   session?: Session;
   onSelect?: () => void;
   isSelected?: boolean;
+  onDeleteClick?: () => void; // 👈 neu, generischer Callback
 };
 
 const SlotCard: React.FC<SlotCardProps> = ({
   title,
   slot,
-  onDeleted,
   session,
   onSelect,
   isSelected,
+  onDeleteClick,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
   const hasBooking = slot.booking !== null;
-
-  const handleDelete = async () => {
-    if (!session) return;
-    const confirmed = window.confirm(
-      "Willst du diesen Termin wirklich löschen?"
-    );
-    if (!confirmed) return;
-
-    try {
-      setIsDeleting(true);
-      const res = await fetch(`/api/slot/${slot.id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        console.error("Failed to delete slot", await res.json());
-        alert("Fehler beim Löschen des Termins.");
-        return;
-      }
-
-      onDeleted?.(slot.id);
-      toast.success(`Termin erfolgreich gelöscht`, {
-        description: "Du hast dein Termin erfolgreich gelöscht.",
-        closeButton: true,
-        richColors: true,
-      });
-    } catch (error) {
-      console.error("Error deleting slot", error);
-      toast.error(`Ups. Es gab wohl ein Fehler`, {
-        description:
-          "Es gab wohl ein Fehler beim löschen eines Termins. Bitte melde dich bei deinem Boss Bruder",
-        closeButton: true,
-        richColors: true,
-      });
-    } finally {
-      setIsDeleting(false);
-    }
-  };
 
   return (
     <Card
@@ -92,15 +52,14 @@ const SlotCard: React.FC<SlotCardProps> = ({
             {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
           </span>
         </div>
-        {session && onDeleted && (
+        {session && onDeleteClick && (
           <Button
             variant="ghost"
             size="icon"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete();
+              onDeleteClick();
             }}
-            disabled={isDeleting}
             aria-label="Termin löschen"
           >
             <Trash2 className="w-4 h-4" />

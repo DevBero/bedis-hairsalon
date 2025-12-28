@@ -1,17 +1,45 @@
+"use client";
+
 import { TabsContent } from "../ui/tabs";
 import SlotCard from "../slots/slot-card";
 import { Session } from "next-auth";
-import { SlotWithBooking } from "@/lib/slot-service";
+import type { SlotWithBooking } from "@/lib/slot-service";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const FreeSlots = ({
   slots,
   session,
-  onDeleted,
 }: {
   slots: SlotWithBooking[];
   session: Session | undefined;
-  onDeleted?: (id: string) => void;
 }) => {
+  const router = useRouter();
+
+  const handleDeleteSlot = async (slotId: string) => {
+    const confirmed = window.confirm("Freien Termin wirklich löschen?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/slot/${slotId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        const msg = data?.error ?? "Fehler beim Löschen des Slots.";
+        toast.error(msg);
+        return;
+      }
+
+      toast.success("Termin erfolgreich gelöscht");
+      router.refresh();
+    } catch (e) {
+      console.error(e);
+      toast.error("Ups, da ist etwas schief gelaufen.");
+    }
+  };
+
   return (
     <TabsContent value="termine">
       {slots.length === 0 ? (
@@ -22,10 +50,10 @@ const FreeSlots = ({
         slots.map((slot) => (
           <SlotCard
             key={slot.id}
-            session={session}
-            onDeleted={onDeleted}
             slot={slot}
-            title={"Freier Termin"}
+            session={session}
+            title="Freier Termin"
+            onDeleteClick={() => handleDeleteSlot(slot.id)} // 👈 Slot löschen
           />
         ))
       )}
