@@ -10,16 +10,16 @@ import SlotCard from "@/components/slots/slot-card";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import type { Session } from "next-auth";
-import type { Slot } from "database";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { SlotWithBooking } from "@/lib/slot-service";
 
 type GroupedSlots = {
   key: string;
   date: Date;
-  slots: Slot[];
+  slots: SlotWithBooking[];
 };
 
 type ClientSlotsListProps = {
@@ -101,10 +101,8 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
                   <SlotCard
                     key={slot.id}
                     session={session}
-                    slot={{
-                      ...slot,
-                      title: "Freier Termin",
-                    }}
+                    slot={slot}
+                    title="Freier Termin"
                     onSelect={() => handleSelectSlot(slot.id)}
                     isSelected={selectedSlot === slot.id}
                   />

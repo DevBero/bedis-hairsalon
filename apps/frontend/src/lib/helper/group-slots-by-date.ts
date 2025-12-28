@@ -1,8 +1,8 @@
 import { format } from "date-fns";
-import { Slot } from "database";
+import { SlotWithBooking } from "../slot-service";
 
-const groupSlotsByDate = (slots: Slot[]) => {
-  const map = new Map<string, Slot[]>();
+const groupSlotsByDate = (slots: SlotWithBooking[]) => {
+  const map = new Map<string, SlotWithBooking[]>();
 
   for (const slot of slots) {
     const date = new Date(slot.date);
