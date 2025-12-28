@@ -15,8 +15,8 @@ type SlotCardProps = {
   slot: SlotWithBooking;
   onDeleted?: (id: string) => void;
   session?: Session;
-  onSelect?: () => void; // 👈 neu
-  isSelected?: boolean; // 👈 neu
+  onSelect?: () => void;
+  isSelected?: boolean;
 };
 
 const SlotCard: React.FC<SlotCardProps> = ({
@@ -28,7 +28,7 @@ const SlotCard: React.FC<SlotCardProps> = ({
   isSelected,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const hasBooking = slot.booking !== undefined;
+  const hasBooking = slot.booking !== null;
 
   const handleDelete = async () => {
     if (!session) return;
@@ -72,7 +72,7 @@ const SlotCard: React.FC<SlotCardProps> = ({
     <Card
       className={cn(
         "mb-4 cursor-pointer transition-colors my-2 mx-4",
-        isSelected && "outline-solid outline-green-700"
+        isSelected && "outline-solid outline-blue-600"
       )}
       onClick={onSelect}
     >
@@ -97,7 +97,7 @@ const SlotCard: React.FC<SlotCardProps> = ({
             variant="ghost"
             size="icon"
             onClick={(e) => {
-              e.stopPropagation(); // Klick auf Delete nicht als "select" werten
+              e.stopPropagation();
               handleDelete();
             }}
             disabled={isDeleting}

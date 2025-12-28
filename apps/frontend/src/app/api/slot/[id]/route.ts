@@ -12,7 +12,7 @@ const getHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
   try {
     const slot = await prisma.slot.findUniqueOrThrow({
       where: { id: slotId },
-      include: { booking: true }, // optional
+      include: { booking: true },
     });
 
     return NextResponse.json({ slot }, { status: 200 });
@@ -61,7 +61,16 @@ const patchHandler: ApiHandler<{ id: string }> = async (
   }
 
   const body = await req.json().catch(() => ({}));
-  const name = body.name ?? session.user?.name ?? "Unbekannter Kunde";
+
+  const { selectedSlotId, name: bodyName } = body;
+  const name = bodyName ?? session.user?.name ?? "Unbekannter Kunde";
+
+  if (selectedSlotId && selectedSlotId !== slotId) {
+    return NextResponse.json(
+      { error: "Route and body slotId mismatch" },
+      { status: 400 }
+    );
+  }
 
   const slot = await prisma.slot.findUnique({
     where: { id: slotId },

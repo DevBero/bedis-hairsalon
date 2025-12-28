@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SlotWithBooking } from "@/lib/slot-service";
+import useStore from "@/lib/store";
 
 type GroupedSlots = {
   key: string;
@@ -36,6 +37,7 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
   );
   const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
   const router = useRouter();
+  const { name } = useStore();
 
   const handleSelectSlot = (id: string) => {
     setSelectedSlot(id);
@@ -48,6 +50,18 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
       return;
     }
 
+    if (!name) {
+      toast.error("Name ist erforderlich");
+      return;
+    }
+
+    const flatSlots = grouped.flatMap((g) => g.slots);
+    const slot = flatSlots.find((s) => s.id === selectedSlot);
+    if (!slot) {
+      toast.error("Ausgewählter Termin wurde nicht gefunden.");
+      return;
+    }
+
     try {
       setIsLoadingSubmit(true);
 
@@ -57,7 +71,8 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: session.user?.name, // optional
+          slotId: selectedSlot,
+          name,
         }),
       });
 
@@ -68,13 +83,24 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
         return;
       }
 
+      const bookingDate = slot.date.toISOString().split("T")[0];
+      const start = format(slot.start_time, "HH:mm");
+      const end = format(slot.end_time, "HH:mm");
+
+      const params = new URLSearchParams({
+        date: bookingDate,
+        start,
+        end,
+        title: name || "Termin",
+      });
+
+      router.push(`/select-slot/submit?${params.toString()}`);
+
       toast.success("Termin erfolgreich gebucht!", {
         description: "Du erhältst in Kürze eine Bestätigung.",
         closeButton: true,
         richColors: true,
       });
-
-      router.refresh();
     } catch (e) {
       console.error(e);
       toast.error("Ups, da ist etwas schief gelaufen.");
@@ -89,7 +115,7 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
     </p>
   ) : (
     <>
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full mb-20">
         {grouped.map(({ key, date, slots }) => (
           <AccordionItem key={key} value={key}>
             <AccordionTrigger className="p-4">
@@ -116,7 +142,7 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
         <div className="m-4 fixed bottom-0 mb-8 w-[calc(100%-2rem)]">
           <Button
             onClick={() => handleSubmitBooking()}
-            className="w-full bg-green-700"
+            className="w-full bg-blue-600"
             size="lg"
           >
             {isLoadingSubmit ? "...loading" : "Termin buchen"}

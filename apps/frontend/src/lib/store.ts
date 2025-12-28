@@ -23,7 +23,6 @@ const toHHMM = (d: Date) => d.toTimeString().slice(0, 5);
 
 const getDefaultTimes = () => {
   const now = new Date();
-  // const plus5h = new Date(now.getTime() + 5 * 60 * 60 * 1000);
 
   return {
     startTime: toHHMM(now),

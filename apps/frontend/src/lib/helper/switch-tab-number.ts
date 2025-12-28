@@ -26,7 +26,7 @@ export const decrementTabNumer = ({
 }: IncrementTabNumberI) => {
   const params = new URLSearchParams(searchParams.toString());
   const current = Number(params.get("t") ?? "0");
-  const next = Math.max(0, current - 1); // nicht unter 0 gehen
+  const next = Math.max(0, current - 1);
   params.set("t", String(next));
 
   router.push(`${pathname}?${params.toString()}`);

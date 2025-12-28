@@ -1,4 +1,3 @@
-// lib/slot-service.ts
 import { prisma } from "database";
 import { GetSlotsQueryDTO } from "./dtos/slots-query.dto";
 import type { Slot, Booking } from "database";
@@ -28,7 +27,7 @@ export class SlotService {
         start_time: "asc",
       },
       include: {
-        booking: true, // ⬅️ wichtig
+        booking: true,
       },
     });
   }

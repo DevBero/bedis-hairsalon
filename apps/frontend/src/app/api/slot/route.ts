@@ -85,7 +85,6 @@ const postHandler: ApiHandler<object> = async (req) => {
     return NextResponse.json(
       {
         count: result.count,
-        // optional: slotsData zurückgeben, wenn du sie direkt im FE sehen willst
       },
       { status: 201 }
     );

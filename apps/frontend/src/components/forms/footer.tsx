@@ -28,12 +28,7 @@ const FormFooter = ({
           Zurück
         </Button>
       )}
-      <Button
-        className={cn(submit ? "bg-green-800" : "")}
-        size="lg"
-        onClick={onClick}
-        disabled={disabled}
-      >
+      <Button size="lg" onClick={onClick} disabled={disabled}>
         {submit ? loading ? <LoaderIcon /> : "Termine erstellen" : "Weiter"}
       </Button>
     </div>
