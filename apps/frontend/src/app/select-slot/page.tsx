@@ -1,20 +1,11 @@
 export const dynamic = "force-dynamic";
 
-import PageWrapper from "@/components/layout/page-wrapper";
 import UserPageHeader from "@/components/layout/user-header";
 import { SlotService } from "@/lib/slot-service";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
-import { format } from "date-fns";
-import { de } from "date-fns/locale";
 import { groupSlotsByDate } from "@/lib/helper/group-slots-by-date";
 import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
-import SlotCard from "@/components/slots/slot-card";
 import { getServerSession } from "next-auth";
+import ClientSlotList from "@/components/slots/client-slots-list";
 
 type SelectSlotPageProps = {
   searchParams: Promise<GetSlotsQueryDTO>;
@@ -31,44 +22,15 @@ const SelectSlotPage = async ({ searchParams }: SelectSlotPageProps) => {
     end_date: in14Days,
   });
 
-  const grouped = groupSlotsByDate(slots);
+  const freeSlots = slots.filter((slot) => slot.booking === null);
 
-  console.log("SESSION ", session);
+  const grouped = groupSlotsByDate(freeSlots);
 
   return (
     <div className="flex flex-col w-full">
       <UserPageHeader title="Termin wählen" />
-      <PageWrapper>
-        {grouped.length === 0 ? (
-          <p className="p-4 text-center text-sm text-gray-500">
-            In den nächsten 14 Tagen sind keine Termine verfügbar.
-          </p>
-        ) : (
-          <Accordion type="single" collapsible className="w-full">
-            {grouped.map(({ key, date, slots }) => (
-              <AccordionItem key={key} value={key}>
-                <AccordionTrigger>
-                  {format(date, "EEEE, dd. MMMM", { locale: de })}
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex flex-col">
-                    {slots.map((slot) => (
-                      <SlotCard
-                        session={session ?? undefined}
-                        key={slot.id}
-                        slot={{
-                          ...slot,
-                          title: "Freier Termin",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        )}
-      </PageWrapper>
+
+      <ClientSlotList grouped={grouped} session={session ?? undefined} />
     </div>
   );
 };

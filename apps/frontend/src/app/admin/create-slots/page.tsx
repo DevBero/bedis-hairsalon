@@ -96,7 +96,7 @@ const CreateSlotsPage = () => {
         end_time: endTime,
       };
 
-      const res = await fetch("/api/slots", {
+      const res = await fetch("/api/slot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

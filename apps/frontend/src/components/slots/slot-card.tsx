@@ -4,29 +4,34 @@ import React, { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { BadgeCheck, Calendar, Trash2 } from "lucide-react";
 import { formatTime } from "@/lib/helper/format-time";
-import type { Slot } from "database";
 import { Button } from "../ui/button";
-import { SlotCardType } from "@/types/slot-card-type";
 import { cn } from "@/lib/utils";
 import { Session } from "next-auth";
 import { toast } from "sonner";
+import { SlotWithBooking } from "@/lib/slot-service";
 
 type SlotCardProps = {
-  slot: Slot & {
-    title: string;
-    type?: SlotCardType;
-  };
+  title: string;
+  slot: SlotWithBooking;
   onDeleted?: (id: string) => void;
-  session: Session | undefined;
+  session?: Session;
+  onSelect?: () => void; // 👈 neu
+  isSelected?: boolean; // 👈 neu
 };
 
-const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
+const SlotCard: React.FC<SlotCardProps> = ({
+  title,
+  slot,
+  onDeleted,
+  session,
+  onSelect,
+  isSelected,
+}) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const isBooking = slot.type === SlotCardType.Booking;
+  const hasBooking = slot.booking !== undefined;
 
   const handleDelete = async () => {
     if (!session) return;
-
     const confirmed = window.confirm(
       "Willst du diesen Termin wirklich löschen?"
     );
@@ -34,7 +39,7 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
 
     try {
       setIsDeleting(true);
-      const res = await fetch(`/api/slots/${slot.id}`, {
+      const res = await fetch(`/api/slot/${slot.id}`, {
         method: "DELETE",
       });
 
@@ -44,8 +49,7 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
         return;
       }
 
-      onDeleted?.(slot.id); // 👈 triggert router.refresh() im Parent
-
+      onDeleted?.(slot.id);
       toast.success(`Termin erfolgreich gelöscht`, {
         description: "Du hast dein Termin erfolgreich gelöscht.",
         closeButton: true,
@@ -65,28 +69,37 @@ const SlotCard: React.FC<SlotCardProps> = ({ slot, onDeleted, session }) => {
   };
 
   return (
-    <Card className="mb-4">
+    <Card
+      className={cn(
+        "mb-4 cursor-pointer transition-colors my-2 mx-4",
+        isSelected && "outline-solid outline-green-700"
+      )}
+      onClick={onSelect}
+    >
       <CardContent className="flex gap-2 items-center">
         <div
           className={cn(
             `flex flex-col aspect-square p-4 rounded-md`,
-            isBooking ? "bg-green-200" : "bg-gray-200"
+            hasBooking ? "bg-green-200" : "bg-gray-200"
           )}
         >
-          {isBooking ? <BadgeCheck color="green" /> : <Calendar />}
+          {hasBooking ? <BadgeCheck color="green" /> : <Calendar />}
         </div>
         <div className="p-1 flex-1">
-          <h3>{slot.title}</h3>
+          <h3>{title}</h3>
           <span className="text-gray-500">
             {slot.date.toLocaleDateString("de")} um{" "}
             {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
           </span>
         </div>
-        {session && (
+        {session && onDeleted && (
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleDelete}
+            onClick={(e) => {
+              e.stopPropagation(); // Klick auf Delete nicht als "select" werten
+              handleDelete();
+            }}
             disabled={isDeleting}
             aria-label="Termin löschen"
           >

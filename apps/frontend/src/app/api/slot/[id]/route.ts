@@ -1,7 +1,9 @@
+import { authOptions } from "@/lib/auth/auth-options";
 import { ApiHandler } from "@/lib/auth/types";
 import { withAuth } from "@/lib/auth/withAuth";
 import { getLogger } from "@/lib/helper/logger";
 import { prisma } from "database";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 const logger = getLogger("/api/slot/[id]");
@@ -10,6 +12,7 @@ const getHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
   try {
     const slot = await prisma.slot.findUniqueOrThrow({
       where: { id: slotId },
+      include: { booking: true }, // optional
     });
 
     return NextResponse.json({ slot }, { status: 200 });
@@ -48,5 +51,41 @@ const deleteHandler: ApiHandler<{ id: string }> = async (_, { id: slotId }) => {
   }
 };
 
+const patchHandler: ApiHandler<{ id: string }> = async (
+  req,
+  { id: slotId }
+) => {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => ({}));
+  const name = body.name ?? session.user?.name ?? "Unbekannter Kunde";
+
+  const slot = await prisma.slot.findUnique({
+    where: { id: slotId },
+    include: { booking: true },
+  });
+
+  if (!slot) {
+    return NextResponse.json({ error: "Slot not found" }, { status: 404 });
+  }
+
+  if (slot.booking) {
+    return NextResponse.json({ error: "Slot already booked" }, { status: 409 });
+  }
+
+  const booking = await prisma.booking.create({
+    data: {
+      slotId,
+      name,
+    },
+  });
+
+  return NextResponse.json({ slot: { ...slot, booking } }, { status: 200 });
+};
+
 export const GET = withAuth(getHandler);
 export const DELETE = withAuth(deleteHandler);
+export const PATCH = withAuth(patchHandler);

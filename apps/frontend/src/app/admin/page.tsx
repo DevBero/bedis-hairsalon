@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 import SlotsList from "@/components/slots/slots-list";
 import { SlotService } from "@/lib/slot-service";
 import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
-import PageWrapper from "@/components/layout/page-wrapper";
 import ActionButton from "@/components/admin/action-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +25,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const session = await getServerSession();
 
   return (
-    <PageWrapper>
+    <>
       <SlotsList session={session ?? undefined} slots={slots} />
       <ActionButton>
         <DropdownMenu>
@@ -42,6 +41,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </ActionButton>
-    </PageWrapper>
+    </>
   );
 }

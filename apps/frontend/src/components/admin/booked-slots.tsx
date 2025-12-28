@@ -1,31 +1,27 @@
 import { TabsContent } from "../ui/tabs";
 import SlotCard from "../slots/slot-card";
 import { Session } from "next-auth";
-import { SlotWithBooking } from "@/lib/slot-service";
+import type { SlotWithBooking } from "@/lib/slot-service";
 
-const FreeSlots = ({
+const BookedSlots = ({
   slots,
-  session,
-  onDeleted,
 }: {
   slots: SlotWithBooking[];
   session: Session | undefined;
   onDeleted?: (id: string) => void;
 }) => {
   return (
-    <TabsContent value="termine">
+    <TabsContent value="buchungen">
       {slots.length === 0 ? (
         <p className="p-4 text-center text-sm text-gray-500">
-          Keine freien Termine verfügbar.
+          Noch hat keiner gebucht.
         </p>
       ) : (
         slots.map((slot) => (
           <SlotCard
             key={slot.id}
-            session={session}
-            onDeleted={onDeleted}
             slot={slot}
-            title={"Freier Termin"}
+            title={slot.booking?.name ?? "Unbekannt"}
           />
         ))
       )}
@@ -33,4 +29,4 @@ const FreeSlots = ({
   );
 };
 
-export default FreeSlots;
+export default BookedSlots;

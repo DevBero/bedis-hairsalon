@@ -1,16 +1,17 @@
 "use client";
 
-import type { Slot } from "database";
 import AdminTabs from "../admin/tabs";
 import FreeSlots from "../admin/free-slots";
+import BookedSlots from "../admin/booked-slots";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import type { SlotWithBooking } from "@/lib/slot-service";
 
 const SlotsList = ({
   slots,
   session,
 }: {
-  slots: Slot[];
+  slots: SlotWithBooking[];
   session: Session | undefined;
 }) => {
   const router = useRouter();
@@ -19,9 +20,17 @@ const SlotsList = ({
     router.refresh();
   };
 
+  const bookedSlots = slots.filter((slot) => slot.booking !== null);
+  const freeSlots = slots.filter((slot) => slot.booking === null);
+
   return (
     <AdminTabs>
-      <FreeSlots session={session} slots={slots} onDeleted={handleDeleted} />
+      <BookedSlots session={session} slots={bookedSlots} />
+      <FreeSlots
+        session={session}
+        slots={freeSlots}
+        onDeleted={handleDeleted}
+      />
     </AdminTabs>
   );
 };
