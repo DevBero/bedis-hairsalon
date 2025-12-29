@@ -11,9 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus } from "lucide-react";
+import { EllipsisVertical, Plus } from "lucide-react";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
+import DeleteAllSlotsItem from "@/components/admin/delete-all-slots";
 
 type AdminPageProps = {
   searchParams: Promise<GetSlotsQueryDTO>;
@@ -31,13 +32,17 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="icon-lg">
-              <Plus />
+              <EllipsisVertical />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end">
             <DropdownMenuItem asChild>
-              <Link href="/admin/create-slots?t=0">Termin anlegen</Link>
+              <Link href="/admin/create-slots?t=0">
+                <Plus color="var(--primary)" />
+                Termin anlegen
+              </Link>
             </DropdownMenuItem>
+            <DeleteAllSlotsItem />
           </DropdownMenuContent>
         </DropdownMenu>
       </ActionButton>

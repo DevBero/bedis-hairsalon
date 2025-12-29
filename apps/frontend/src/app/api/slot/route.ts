@@ -103,6 +103,19 @@ const postHandler: ApiHandler<object> = async (req) => {
   }
 };
 
-export const POST = withAuth(postHandler);
+const deleteAllHandler: ApiHandler<object> = async () => {
+  try {
+    const result = await prisma.slot.deleteMany({});
+    return NextResponse.json({ deletedCount: result.count }, { status: 200 });
+  } catch (e) {
+    logger.error(`Error deleting all slots: ${e}`);
+    return NextResponse.json(
+      { error: "Error deleting all slots" },
+      { status: 500 }
+    );
+  }
+};
 
+export const POST = withAuth(postHandler);
+export const DELETE = withAuth(deleteAllHandler);
 export const GET = withAuth(getHandler);
