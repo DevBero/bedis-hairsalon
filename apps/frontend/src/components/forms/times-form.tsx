@@ -14,15 +14,15 @@ const TimesForm = ({
   setEnd,
 }: TimesFormProps) => {
   return (
-    <form className="mt-4 mb-6 p-3 flex flex-col justify-end gap-6 w-full max-w-full overflow-x-hidden">
-      <div className="flex flex-col gap-2 min-w-0 w-full">
+    <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 overflow-x-hidden border border-red-500">
+      <div className="flex flex-col gap-2 min-w-0 w-full border border-orange-500">
         <Input
           type="time"
           id="start-time-picker"
           required
           defaultValue={start_time}
           onChange={(e) => setStart(e.target.value)}
-          className="h-20 text-xl [&>svg]:hidden w-full max-w-full block"
+          className="h-20 text-xl [&>svg]:hidden w-full border-green-500"
         />
       </div>
       <div className="flex flex-col gap-2 min-w-0 w-full">
@@ -32,7 +32,7 @@ const TimesForm = ({
           required
           defaultValue={end_time}
           onChange={(e) => setEnd(e.target.value)}
-          className="h-20 text-xl [&>svg]:hidden w-full max-w-full block"
+          className="h-20 text-xl [&>svg]:hidden w-full"
         />
       </div>
     </form>
