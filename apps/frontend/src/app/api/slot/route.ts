@@ -2,7 +2,7 @@ import { ApiHandler } from "@/lib/auth/types";
 import { withAuth } from "@/lib/auth/withAuth";
 import { CreateSlotsDTO } from "@/lib/dtos/create-slot.dto";
 import { GetSlotsQueryDTO } from "@/lib/dtos/slots-query.dto";
-import { combineDateAndTimeUtc } from "@/lib/helper/cobine-date-and-time";
+import { combineDateAndTimeLocal } from "@/lib/helper/cobine-date-and-time";
 import { getLogger } from "@/lib/helper/logger";
 import { parseDateOnly } from "@/lib/helper/parse-date";
 import { prisma } from "database";
@@ -44,8 +44,9 @@ const postHandler: ApiHandler<object> = async (req) => {
 
     console.log("BODY", body);
 
-    const startDateTime = combineDateAndTimeUtc(body.date, body.start_time);
-    const endDateTime = combineDateAndTimeUtc(body.date, body.end_time);
+    const startDateTime = combineDateAndTimeLocal(body.date, body.start_time);
+    const endDateTime = combineDateAndTimeLocal(body.date, body.end_time);
+
     const slotDate = parseDateOnly(body.date);
 
     if (endDateTime <= startDateTime) {

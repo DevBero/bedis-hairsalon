@@ -41,7 +41,7 @@ const FreeSlots = ({
   };
 
   return (
-    <TabsContent value="termine">
+    <TabsContent value="termine" className="mb-20">
       {slots.length === 0 ? (
         <p className="p-4 text-center text-sm text-gray-500">
           Keine freien Termine verfügbar.

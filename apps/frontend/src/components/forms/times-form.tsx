@@ -16,7 +16,6 @@ const TimesForm = ({
   return (
     <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 w-full overflow-x-hidden">
       <div className="flex flex-col gap-2 min-w-0 w-full">
-        <span>VON</span>
         <Input
           type="time"
           id="start-time-picker"
@@ -27,7 +26,6 @@ const TimesForm = ({
         />
       </div>
       <div className="flex flex-col gap-2 min-w-0 w-full">
-        <span>BIS</span>
         <Input
           type="time"
           id="end-time-picker"
