@@ -1,9 +1,7 @@
-import { authOptions } from "@/lib/auth/auth-options";
 import { ApiHandler } from "@/lib/auth/types";
 import { withAuth } from "@/lib/auth/withAuth";
 import { getLogger } from "@/lib/helper/logger";
 import { prisma } from "database";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 const logger = getLogger("/api/slot/[id]");
@@ -39,7 +37,6 @@ const deleteHandler: ApiHandler<{ id: string }> = async (
       return NextResponse.json({ error: "Slot not found" }, { status: 404 });
     }
 
-    // ❌ Nur Booking stornieren
     if (cancelBooking) {
       if (!slot.booking) {
         return NextResponse.json(
@@ -58,7 +55,6 @@ const deleteHandler: ApiHandler<{ id: string }> = async (
       );
     }
 
-    // 🗑 Kompletter Slot löschen (z.B. im FreeSlots-Tab)
     await prisma.slot.delete({
       where: { id: slotId },
     });
@@ -76,50 +72,5 @@ const deleteHandler: ApiHandler<{ id: string }> = async (
   }
 };
 
-const patchHandler: ApiHandler<{ id: string }> = async (
-  req,
-  { id: slotId }
-) => {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const body = await req.json().catch(() => ({}));
-
-  const { selectedSlotId, name: bodyName } = body;
-  const name = bodyName ?? session.user?.name ?? "Unbekannter Kunde";
-
-  if (selectedSlotId && selectedSlotId !== slotId) {
-    return NextResponse.json(
-      { error: "Route and body slotId mismatch" },
-      { status: 400 }
-    );
-  }
-
-  const slot = await prisma.slot.findUnique({
-    where: { id: slotId },
-    include: { booking: true },
-  });
-
-  if (!slot) {
-    return NextResponse.json({ error: "Slot not found" }, { status: 404 });
-  }
-
-  if (slot.booking) {
-    return NextResponse.json({ error: "Slot already booked" }, { status: 409 });
-  }
-
-  const booking = await prisma.booking.create({
-    data: {
-      slotId,
-      name,
-    },
-  });
-
-  return NextResponse.json({ slot: { ...slot, booking } }, { status: 200 });
-};
-
 export const GET = withAuth(getHandler);
 export const DELETE = withAuth(deleteHandler);
-export const PATCH = withAuth(patchHandler);

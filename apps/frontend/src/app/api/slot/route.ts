@@ -42,8 +42,6 @@ const postHandler: ApiHandler<object> = async (req) => {
   try {
     const body = (await req.json()) as CreateSlotsDTO;
 
-    console.log("BODY", body);
-
     const startDateTime = combineDateAndTimeLocal(body.date, body.start_time);
     const endDateTime = combineDateAndTimeLocal(body.date, body.end_time);
 

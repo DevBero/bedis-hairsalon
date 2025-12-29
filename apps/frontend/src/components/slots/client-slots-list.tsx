@@ -49,10 +49,6 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
 
   const handleSubmitBooking = async () => {
     if (!selectedSlot) return;
-    if (!session) {
-      toast.error("Bitte melde dich an, um einen Termin zu buchen.");
-      return;
-    }
 
     if (!name) {
       toast.error("Name ist erforderlich");
@@ -69,8 +65,8 @@ const ClientSlotsList: React.FC<ClientSlotsListProps> = ({
     try {
       setIsLoadingSubmit(true);
 
-      const res = await fetch(`/api/slot/${selectedSlot}`, {
-        method: "PATCH",
+      const res = await fetch(`/api/booking`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
