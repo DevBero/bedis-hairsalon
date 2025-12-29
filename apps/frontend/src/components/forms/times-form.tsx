@@ -14,7 +14,7 @@ const TimesForm = ({
   setEnd,
 }: TimesFormProps) => {
   return (
-    <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 w-full overflow-x-hidden">
+    <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 overflow-x-hidden">
       <div className="flex flex-col gap-2 min-w-0 w-full">
         <Input
           type="time"
