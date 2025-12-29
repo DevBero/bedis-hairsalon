@@ -1,4 +1,4 @@
-import { Input } from "../ui/input";
+// import { Input } from "../ui/input";
 
 type TimesFormProps = {
   start_time: string;
@@ -16,7 +16,7 @@ const TimesForm = ({
   return (
     <form className="mt-4 h-full mb-6 p-3 flex flex-col justify-end gap-6 overflow-x-hidden border border-red-500">
       <div className="flex flex-col gap-2 min-w-0 w-full border border-orange-500">
-        <Input
+        <input
           type="time"
           id="start-time-picker"
           required
@@ -26,7 +26,7 @@ const TimesForm = ({
         />
       </div>
       <div className="flex flex-col gap-2 min-w-0 w-full">
-        <Input
+        <input
           type="time"
           id="end-time-picker"
           required
