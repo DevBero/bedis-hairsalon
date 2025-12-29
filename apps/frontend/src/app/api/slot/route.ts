@@ -105,7 +105,11 @@ const postHandler: ApiHandler<object> = async (req) => {
 
 const deleteAllHandler: ApiHandler<object> = async () => {
   try {
-    const result = await prisma.slot.deleteMany({});
+    const result = await prisma.slot.deleteMany({
+      where: {
+        booking: null,
+      },
+    });
     return NextResponse.json({ deletedCount: result.count }, { status: 200 });
   } catch (e) {
     logger.error(`Error deleting all slots: ${e}`);
